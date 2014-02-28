@@ -1,3 +1,5 @@
+Attempting to show the difference between [bluebird](https://github.com/petkaantonov/bluebird) and vanilla js callbacks for asynchronous calls.
+
 #Usage
 `node getDirListing_Promises.js`
 
@@ -39,3 +41,6 @@ I updated the two functions to match styles. I removed all error handling logic,
 
 ###Vanilla Callbacks
 37
+
+#Misc
+Bluebird actually <i>does</i> execute arrays of promises in parallel, e.g. `.filter` and `.map`. For me, this means making the call to `fs.stat` is essentially the same in either bluebird or the typical callback scenario, i.e. parallel.
