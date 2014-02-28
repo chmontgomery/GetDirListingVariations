@@ -3,11 +3,9 @@ var Promise = require("bluebird"),
   _ = require('lodash');
 
 function getDirListing(path) {
- 
   function toFullPath(file) {
     return path + file;
   }
- 
   function zipObject(dirs) {
     return _.chain(dirs)
       .zipObject()
@@ -16,21 +14,17 @@ function getDirListing(path) {
       })
       .value();
   }
- 
   function onlyDirs(file) {
     return fs.statAsync(file).then(function(file) {
       return !file.isFile()
     });
   }
- 
   function ignoreHidden(name) {
     return !(name.substring(0,1) === '.');
   }
- 
   function toModuleNames(dir) {
     return dir.replace(path, '');
   }
- 
   return fs.readdirAsync(path)
     .map(toFullPath)
     .filter(onlyDirs)

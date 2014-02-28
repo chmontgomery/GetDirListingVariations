@@ -4,21 +4,17 @@ var Promise = require("bluebird"),
 
 function getDirListing(path, cb) {
   var directories = [], statCtr = 1;
-
   function addPaths(err, dirs) {
     if (err) {
       return cb(err);
     }
-
     dirs = dirs.map(function (dir) {
       return path + dir;
     });
-
     dirs.forEach(function (dir) {
       fs.stat(dir, doneStat.bind(null, dirs.length, dir));
     });
   }
-
   function doneStat(len, dir, err, stat) {
     if (err) {
       return cb(err);
@@ -30,10 +26,8 @@ function getDirListing(path, cb) {
       toObject(directories);
     }
   }
-
   function toObject(dirs) {
     var obj = {};
-
     dirs.forEach(function (dir) {
       var name = dir.replace(path, '');
       if (name.substring(0, 1) === '.') {
@@ -41,10 +35,8 @@ function getDirListing(path, cb) {
       }
       obj[name] = true;
     });
-
     cb(null, obj);
   }
-
   fs.readdir(path, addPaths);
 }
 
