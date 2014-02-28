@@ -4,7 +4,9 @@ function getDirListing(path, cb) {
   var directories = [], statCtr = 0;
 
   function addPaths(err, dirs) {
-    if (err) return cb(err);
+    if (err) {
+      return cb(err);
+    }
 
     dirs.map(function (dir) {
       return dir + path;
@@ -16,9 +18,15 @@ function getDirListing(path, cb) {
   }
 
   function doneStat(len, dir, err, stat) {
-    if (err) return cb(err);
-    if (!stat.isFile()) directories.push(dir);
-    if (len === statCtr++) toObject(directories);
+    if (err) {
+      return cb(err);
+    }
+    if (!stat.isFile()) {
+      directories.push(dir);
+    }
+    if (len === statCtr++) {
+      toObject(directories);
+    }
   }
 
   function toObject(dirs) {
@@ -26,7 +34,9 @@ function getDirListing(path, cb) {
 
     dirs.forEach(function (dir) {
       var name = dir.replace(path, '');
-      if (name.substring(0, 1) === '.') return;
+      if (name.substring(0, 1) === '.') {
+        return;
+      }
       obj[name] = true;
     });
 
@@ -35,3 +45,19 @@ function getDirListing(path, cb) {
 
   fs.readdir(addPaths);
 }
+
+// ============================================
+// performance test
+// ============================================
+
+var time = process.hrtime();
+
+getDirListing('fixtures/lib/', function(err, o) {
+  if (err) {
+    console.log('ERROR!', err);
+  } else {
+    var diff = process.hrtime(time);
+    console.log('benchmark took %d nanoseconds', diff[0] * 1e9 + diff[1]);
+    console.log(o);
+  }
+});

@@ -1,0 +1,5 @@
+{
+    "name": "local-svc-error"
+  , "version": "1.0.0"
+  , "main": "./lib/service.js"
+}

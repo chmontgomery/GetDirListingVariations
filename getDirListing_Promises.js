@@ -36,11 +36,20 @@ function getDirListing(path) {
     .filter(onlyDirs)
     .map(toModuleNames)
     .filter(ignoreHidden)
-    .then(zipObject)
-    .then(function(o) {
-      dirListingPromise.resolve(o);
-    })
-    .error(function(e) {
-      dirListingPromise.reject('Unable to read dir names from path "' + path + '"');
-    });
+    .then(zipObject);
 }
+
+// ============================================
+// performance test
+// ============================================
+
+var time = process.hrtime();
+
+getDirListing('fixtures/lib/')
+  .then(function(o) {
+    var diff = process.hrtime(time);
+    console.log('benchmark took %d nanoseconds', diff[0] * 1e9 + diff[1]);
+    console.log(o);
+  }).error(function(err) {
+    console.log('ERROR!', err);
+  });

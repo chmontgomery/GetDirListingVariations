@@ -1,0 +1,5 @@
+{
+    "name": "local-module"
+  , "version": "1.0.0"
+  , "main": "./lib/local_module.js"
+}
