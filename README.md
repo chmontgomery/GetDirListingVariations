@@ -1,3 +1,8 @@
+#Usage
+`node getDirListing_Promises.js`
+or
+`node getDirListing_Vanilla.js`
+
 #Performance
 
 examples run using 1000 parallel executions
