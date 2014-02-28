@@ -1,19 +1,21 @@
-var fs = require('fs');
+var Promise = require("bluebird"),
+  fs = Promise.promisifyAll(require('fs')),
+  _ = require('lodash');
 
 function getDirListing(path, cb) {
-  var directories = [], statCtr = 0;
+  var directories = [], statCtr = 1;
 
   function addPaths(err, dirs) {
     if (err) {
       return cb(err);
     }
 
-    dirs.map(function (dir) {
-      return dir + path;
+    dirs = dirs.map(function (dir) {
+      return path + dir;
     });
 
     dirs.forEach(function (dir) {
-      fs.stat(dir, doneStat.bind(null, dir.length, dir));
+      fs.stat(dir, doneStat.bind(null, dirs.length, dir));
     });
   }
 
@@ -43,21 +45,49 @@ function getDirListing(path, cb) {
     cb(null, obj);
   }
 
-  fs.readdir(addPaths);
+  fs.readdir(path, addPaths);
 }
 
 // ============================================
 // performance test
 // ============================================
 
-var time = process.hrtime();
+var totalRuns = 1000,
+  tasks = [];
 
-getDirListing('fixtures/lib/', function(err, o) {
-  if (err) {
-    console.log('ERROR!', err);
-  } else {
-    var diff = process.hrtime(time);
-    console.log('benchmark took %d nanoseconds', diff[0] * 1e9 + diff[1]);
-    console.log(o);
-  }
+for (var i = 0; i < totalRuns; i++) {
+  tasks.push(new Promise(function(resolve) {
+    var time = process.hrtime();
+    getDirListing('fixtures/lib/', function(err, o) {
+      var diff = process.hrtime(time);
+      resolve((diff[0] * 1e9 + diff[1])/1000000);
+    });
+  }));
+}
+
+Promise.all(tasks).then(function(results) {
+  var totalSeconds = results[results.length-1];
+  console.log('benchmark took %d milliseconds', totalSeconds);
 });
+
+// ============================================
+// Example runs
+// ============================================
+
+/*
+
+ benchmark took 103.234374 milliseconds
+
+ benchmark took 106.310094 milliseconds
+
+ benchmark took 103.02496 milliseconds
+
+ benchmark took 101.188726 milliseconds
+
+ benchmark took 100.582985 milliseconds
+
+ benchmark took 104.616164 milliseconds
+
+ benchmark took 103.611433 milliseconds
+
+*/

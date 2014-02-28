@@ -43,13 +43,42 @@ function getDirListing(path) {
 // performance test
 // ============================================
 
-var time = process.hrtime();
+var totalRuns = 1000,
+  tasks = [];
 
-getDirListing('fixtures/lib/')
-  .then(function(o) {
-    var diff = process.hrtime(time);
-    console.log('benchmark took %d nanoseconds', diff[0] * 1e9 + diff[1]);
-    console.log(o);
-  }).error(function(err) {
-    console.log('ERROR!', err);
-  });
+for (var i = 0; i < totalRuns; i++) {
+  tasks.push(new Promise(function(resolve) {
+    var time = process.hrtime();
+    getDirListing('fixtures/lib/').then(function() {
+      var diff = process.hrtime(time);
+      resolve((diff[0] * 1e9 + diff[1])/1000000);
+    });
+  }));
+}
+
+Promise.all(tasks).then(function(results) {
+  var totalSeconds = results[results.length-1];
+  console.log('benchmark took %d milliseconds', totalSeconds);
+});
+
+// ============================================
+// Example runs
+// ============================================
+
+/*
+
+ benchmark took 132.285435 milliseconds
+
+ benchmark took 131.708112 milliseconds
+
+ benchmark took 133.602357 milliseconds
+
+ benchmark took 138.772284 milliseconds
+
+ benchmark took 137.005165 milliseconds
+
+ benchmark took 130.734027 milliseconds
+
+ benchmark took 135.179099 milliseconds
+
+*/
