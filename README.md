@@ -1,7 +1,8 @@
 #Performance
 
+examples run using 1000 parallel executions
+
 ###Bluebird
-example runs using 1000 parallel executions
 <pre>
 benchmark took 132.285435 milliseconds
 benchmark took 131.708112 milliseconds
@@ -13,7 +14,6 @@ benchmark took 135.179099 milliseconds
 </pre>
 
 ###Vanilla Callbacks
-example runs using 1000 parallel executions
 <pre>
 benchmark took 103.234374 milliseconds
 benchmark took 106.310094 milliseconds

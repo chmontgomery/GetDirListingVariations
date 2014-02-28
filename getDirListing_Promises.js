@@ -54,25 +54,3 @@ Promise.all(tasks).then(function(results) {
   var totalSeconds = results[results.length-1];
   console.log('benchmark took %d milliseconds', totalSeconds);
 });
-
-// ============================================
-// Example runs
-// ============================================
-
-/*
-
- benchmark took 132.285435 milliseconds
-
- benchmark took 131.708112 milliseconds
-
- benchmark took 133.602357 milliseconds
-
- benchmark took 138.772284 milliseconds
-
- benchmark took 137.005165 milliseconds
-
- benchmark took 130.734027 milliseconds
-
- benchmark took 135.179099 milliseconds
-
-*/
