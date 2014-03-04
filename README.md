@@ -6,7 +6,7 @@ Attempting to show the difference between [bluebird](https://github.com/petkaant
 `node benchmark/index.js`
 
 ##Examples
-examples run using 1000 parallel executions
+examples run using 1000 parallel executions. Does actual file system operations.
 
 ###Q
 <pre>
@@ -35,13 +35,14 @@ benchmark took 101.188726 milliseconds
 benchmark took 100.582985 milliseconds
 </pre>
 
-#Realtime Performance
+#Ops/Sec Performance
 
 ##Usage
 `node realtime/index.js`
 
 ##Examples
 This version of the bench uses [benchmark.js](https://github.com/bestiejs/benchmark.js) to achieve statistically significant results.
+Also this does NOT do actual file operations since that is the part of the function that, by far, takes the longest and would significantly alter results
 
 ###Q
 <pre>
