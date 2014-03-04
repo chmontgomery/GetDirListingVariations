@@ -1,10 +1,25 @@
-var bluebird = require("bluebird"),
-  fs = bluebird.promisifyAll(require('fs')),
-  _ = require('lodash');
+var q = require("q"),
+  fs = require("q-io/fs"),
+  _ = require('lodash'),
+  bluebird = require('bluebird');
 
 function getDirListing(path) {
+
+  // helper function (built into bluebird)
+  function map(arr, iterator) {
+    // execute the func for each element in the array and collect the results
+    var promises = arr.map(function (el) {
+      return iterator(el)
+    });
+    return q.all(promises); // return the group promise
+  }
+
   function toFullPath(file) {
     return path + file;
+  }
+
+  function handleAllFiles(result) {
+    return map(result, toFullPath);
   }
 
   function zipObject(dirs) {
@@ -17,7 +32,7 @@ function getDirListing(path) {
   }
 
   function onlyDirs(file) {
-    return fs.statAsync(file).then(function (file) {
+    return fs.stat(file).then(function (file) {
       return !file.isFile()
     });
   }
@@ -30,11 +45,12 @@ function getDirListing(path) {
     return dir.replace(path, '');
   }
 
-  return fs.readdirAsync(path)
-    .map(toFullPath)
-    .filter(onlyDirs)
-    .map(toModuleNames)
-    .filter(ignoreHidden)
+  return fs.list(path)
+    .then(handleAllFiles)
+    // TODO
+    /*.filter(onlyDirs)
+     .map(toModuleNames)
+     .filter(ignoreHidden)*/
     .then(zipObject);
 }
 
@@ -57,6 +73,6 @@ module.exports.run = function () {
 
   return bluebird.all(tasks).then(function (results) {
     var totalSeconds = results[results.length - 1];
-    console.log('benchmark took %d milliseconds', totalSeconds);
+    console.log('realtime test took %d milliseconds', totalSeconds);
   });
 };

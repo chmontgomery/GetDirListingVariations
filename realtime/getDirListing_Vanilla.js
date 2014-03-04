@@ -63,6 +63,6 @@ module.exports.run = function () {
 
   return bluebird.all(tasks).then(function (results) {
     var totalSeconds = results[results.length - 1];
-    console.log('benchmark took %d milliseconds', totalSeconds);
+    console.log('realtime test took %d milliseconds', totalSeconds);
   });
 };
