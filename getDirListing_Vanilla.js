@@ -1,9 +1,10 @@
-var Promise = require("bluebird"),
-  fs = Promise.promisifyAll(require('fs')),
+var bluebird = require("bluebird"),
+  fs = bluebird.promisifyAll(require('fs')),
   _ = require('lodash');
 
 function getDirListing(path, cb) {
   var directories = [], statCtr = 1;
+
   function addPaths(err, dirs) {
     if (err) {
       return cb(err);
@@ -15,6 +16,7 @@ function getDirListing(path, cb) {
       fs.stat(dir, doneStat.bind(null, dirs.length, dir));
     });
   }
+
   function doneStat(len, dir, err, stat) {
     if (err) {
       return cb(err);
@@ -26,6 +28,7 @@ function getDirListing(path, cb) {
       toObject(directories);
     }
   }
+
   function toObject(dirs) {
     var obj = {};
     dirs.forEach(function (dir) {
@@ -37,27 +40,29 @@ function getDirListing(path, cb) {
     });
     cb(null, obj);
   }
+
   fs.readdir(path, addPaths);
 }
 
 // ============================================
 // performance test
 // ============================================
+module.exports.run = function () {
+  var tasks = [],
+    timesToRun = 1000;
 
-var totalRuns = 1000,
-  tasks = [];
+  for (var i = 0; i < timesToRun; i++) {
+    tasks.push(new bluebird(function (resolve) {
+      var time = process.hrtime();
+      getDirListing('fixtures/lib/', function (err, o) {
+        var diff = process.hrtime(time);
+        resolve((diff[0] * 1e9 + diff[1]) / 1000000);
+      });
+    }));
+  }
 
-for (var i = 0; i < totalRuns; i++) {
-  tasks.push(new Promise(function(resolve) {
-    var time = process.hrtime();
-    getDirListing('fixtures/lib/', function(err, o) {
-      var diff = process.hrtime(time);
-      resolve((diff[0] * 1e9 + diff[1])/1000000);
-    });
-  }));
-}
-
-Promise.all(tasks).then(function(results) {
-  var totalSeconds = results[results.length-1];
-  console.log('benchmark took %d milliseconds', totalSeconds);
-});
+  return bluebird.all(tasks).then(function (results) {
+    var totalSeconds = results[results.length - 1];
+    console.log('benchmark took %d milliseconds', totalSeconds);
+  });
+};
