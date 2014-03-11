@@ -1,5 +1,5 @@
 var Promise = require("bluebird"),
-  fs = Promise.promisifyAll(require('./fsmock')),
+  fs = Promise.promisifyAll(require('./benchmark/fsmock')),
   _ = require('lodash');
 
 module.exports = getDirListing;

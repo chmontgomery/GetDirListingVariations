@@ -1,7 +1,7 @@
 var Benchmark = require('benchmark'),
-  qPromises = require('./getDirListing_QPromises'),
-  bluebirdPromises = require('./getDirListing_BluebirdPromises'),
-  listingVanilla = require('./getDirListing_Vanilla'),
+  qPromises = require('../getDirListing_QPromises'),
+  bluebirdPromises = require('../getDirListing_BluebirdPromises'),
+  listingVanilla = require('../getDirListing_Vanilla'),
   suite = new Benchmark.Suite();
 
 suite.add('q', function () {

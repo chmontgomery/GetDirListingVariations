@@ -1,4 +1,4 @@
-var fs = require('./fsmock');
+var fs = require('./benchmark/fsmock');
 
 module.exports = getDirListing;
 
